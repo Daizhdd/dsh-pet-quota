@@ -1,5 +1,7 @@
 # dsh-pet-quota
 
+[![test](https://github.com/Daizhdd/dsh-pet-quota/actions/workflows/test.yml/badge.svg)](https://github.com/Daizhdd/dsh-pet-quota/actions/workflows/test.yml)
+
 给 DSH（DeepSeek Harness）桌面宠物头上挂一条**今日 token 额度气泡**：
 按今天的用量分轻度 / 中度 / 重度三档，档位在气泡里**只用一个彩色圆点**表示——
 没有进度条，也没有百分比。
