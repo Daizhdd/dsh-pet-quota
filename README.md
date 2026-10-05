@@ -12,7 +12,9 @@
 > **English**: A token-quota bubble for the DSH desktop pet. It folds today's usage from the
 > session event stream (the same numbers the sidebar shows) and publishes bubbles through the
 > pet's documented `ctx.pet.announce()` API. The tier is one coloured dot — no progress bar, no
-> percentage. No artwork is shipped and no third-party code is patched.
+> percentage. On dsh-pet 0.4.6+ the pet's own status bubbles can be switched off in its settings
+> (设置 → 宠物 → 状态气泡); this plugin never touches them itself. No artwork is shipped and no
+> third-party code is patched.
 
 ## 它填的是上游留出的空位
 
@@ -52,6 +54,22 @@
 | 重度 | `> 1亿` | 🔴 | 鲸吞模式，我有点热… |
 
 阈值可以在设置页改，改完立刻生效（不用重启）。
+
+## 宠物自己也在冒泡？把它关掉（dsh-pet 0.4.6 起）
+
+本插件只发自己的气泡，**不动宠物自带的会话/状态气泡**（「正在思考」「正在使用 xxx」）。
+想只留额度气泡，把宠物那一栈关掉：
+
+> **设置 → 宠物 → 状态气泡 → 关**（等价于给宠物那条配置写 `statusBubbles: off`）
+
+`off` 只隐藏宠物自带的会话气泡栈与旧式单状态气泡；**本插件的公告气泡与互动反馈气泡
+照常渲染**——这正是「自建气泡面」的插件需要的那一半。两种模式下状态快照都照常携带
+气泡数据，只有渲染被门控，所以随时拨回来即刻恢复。
+
+为什么不是插件替你关：上游实现这个开关时明确否决了「让发布方自行避让」（否则每个发
+气泡的插件都要重造一遍抑制策略），开关属于用户。旧于该字段的 dsh-pet 没有它——
+`voice.json` 的空池会被当作「没有覆盖」丢弃，皮肤机制也只换 idle 轨道——那种版本
+只能改构建产物，本插件不做这件事。
 
 ## 数字是怎么来的
 
