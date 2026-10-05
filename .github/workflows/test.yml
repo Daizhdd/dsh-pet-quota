@@ -1,0 +1,56 @@
+# 两套冒烟测试都是零依赖的纯 Node 脚本，所以这里没有 install 步骤：
+# 每个 job 都是 checkout 之后直接跑，几秒钟出结果。
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# 只读仓库内容即可，CI 不需要任何写权限或密钥。
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: smoke (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 与 package.json 的 engines 对齐：^22.19.0 || >=24.0.0
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - name: host half — 用量折叠 / 三档 / 四类气泡 / 配置
+        run: node tools/smoke_host.mjs
+      - name: browser half — 槽位注册 / 设置页渲染
+        run: node tools/smoke_client.mjs
+
+  sanity:
+    name: repo sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # 本仓库的承诺之一是"不含美术素材"（见 THIRD-PARTY.md）。
+      # 这条会拦住任何误提交的图片/视频，包括将来别人 PR 进来的。
+      - name: no artwork is tracked
+        run: |
+          set -euo pipefail
+          offenders="$(git ls-files | grep -Ei '\.(png|jpe?g|webp|gif|mp4|webm)$' || true)"
+          if [ -n "$offenders" ]; then
+            echo "::error::this repository must not carry artwork; see THIRD-PARTY.md"
+            echo "$offenders"
+            exit 1
+          fi
+          echo "clean: no artwork tracked"
+      - name: python tool compiles
+        run: python3 -m py_compile tools/tier_backtest.py

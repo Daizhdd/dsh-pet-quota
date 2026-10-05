@@ -1,0 +1,13 @@
+# 干净仓库：本插件只有代码，没有美术素材
+assets-src/
+qa/
+pets/
+docs/
+
+# 依赖与本地产物
+node_modules/
+*.orig
+*.log
+__pycache__/
+*.pyc
+.DS_Store

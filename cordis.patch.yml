@@ -1,0 +1,10 @@
+# dsh-pet-quota bundle patch.
+#
+# One row mounts both halves: the Host half (today's-token ledger, tier
+# announcements through the `pet` service, the /api/pet-quota/* routes) and the
+# browser half declared by package.json's `dsh.client`, which is bound to the row
+# whose `name` is the bare package name.
+- insert:
+    - id: pet-quota
+      name: 'dsh-pet-quota'
+      config: {}
